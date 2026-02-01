@@ -1,11 +1,13 @@
 CC = gcc
 
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -Werror
 
 TARGET = a.out
 
+SOURCES = main.c Cell.c CellRow.c
+
 all:
-	$(CC) $(CFLAGS) c_ca_test.c -o $(TARGET)
+	$(CC) $(CFLAGS) $(SOURCES) -o $(TARGET)
 	./${TARGET}
 
 clean:
