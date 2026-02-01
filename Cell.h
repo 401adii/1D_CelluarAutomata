@@ -10,7 +10,7 @@ typedef struct Cell_tag
     struct Cell_tag *pNext;
 } Cell_t;
 
-uint8_t Cell_GetCellState(Cell_t *cell);
+uint8_t Cell_GetState(Cell_t *cell);
 uint8_t Cell_GetNextCellState(Cell_t *cell);
 uint8_t Cell_GetPrevCellState(Cell_t *cell);
 

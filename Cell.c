@@ -1,6 +1,6 @@
 #include "Cell.h"
 
-uint8_t Cell_GetCellState(Cell_t *cell)
+uint8_t Cell_GetState(Cell_t *cell)
 {
     return cell->state;
 }
