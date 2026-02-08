@@ -23,5 +23,6 @@ uint8_t Cell_GetState(Cell_t *cell);
 uint8_t Cell_GetNextCellState(Cell_t *cell);
 uint8_t Cell_GetPrevCellState(Cell_t *cell);
 CellStatus_t Cell_ToggleState(Cell_t *cell);
+CellStatus_t Cell_WriteState(Cell_t *cell, uint8_t state);
 
 #endif

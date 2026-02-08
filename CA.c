@@ -1,4 +1,5 @@
 #include "CA.h"
+#include "Cell.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,10 +23,30 @@ Rule_t *CA_CreateRuleset()
 
 void CA_UpdateRulesetOutcome(Rule_t *rules, uint8_t ruleNum)
 {
-    for (int i = RULESET_SIZE - 1; i >= 0; i--)
+    for (int16_t i = 0; i < RULESET_SIZE; i++)
     {
-        rules[i].outcome = !(ruleNum & 1);
+        rules[i].outcome = ruleNum & 1;
         ruleNum = ruleNum >> 1;
+    }
+}
+
+void CA_Run(CellRow_t *row1, CellRow_t *row2, Rule_t *rules)
+{
+    for (uint8_t i = 0; i < row1->size; i++)
+    {
+        Cell_t *cell1 = CellRow_GetCellAtIndex(row1, i);
+        Cell_t *cell2 = CellRow_GetCellAtIndex(row2, i);
+        for (uint8_t j = 0; j < RULESET_SIZE; j++)
+        {
+            if (RULE_OK == Rule_Check(&rules[j], cell1))
+            {
+                Cell_WriteState(cell2, 1);
+            }
+            else
+            {
+                Cell_WriteState(cell2, 0);
+            }
+        }
     }
 }
 
