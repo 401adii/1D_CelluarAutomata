@@ -20,6 +20,15 @@ Rule_t *CA_CreateRuleset()
     return rules;
 }
 
+void CA_UpdateRulesetOutcome(Rule_t *rules, uint8_t ruleNum)
+{
+    for (int i = RULESET_SIZE - 1; i >= 0; i--)
+    {
+        rules[i].outcome = !(ruleNum & 1);
+        ruleNum = ruleNum >> 1;
+    }
+}
+
 void CA_DeleteRuleset(Rule_t *rules)
 {
     free(rules);

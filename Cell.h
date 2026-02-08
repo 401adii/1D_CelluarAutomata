@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define CELL_STATE_0 '.'
+#define CELL_STATE_1 '#'
+
 typedef struct Cell_tag
 {
     uint8_t state;

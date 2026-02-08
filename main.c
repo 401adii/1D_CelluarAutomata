@@ -9,6 +9,7 @@
 int main(void)
 {
     Rule_t *rules = CA_CreateRuleset();
+    CA_UpdateRulesetOutcome(rules, 25);
     for (int i = 0; i < 8; i++)
     {
         Rule_Print(rules[i]);

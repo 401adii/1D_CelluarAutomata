@@ -2,9 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define STATE_0 '.'
-#define STATE_1 '#'
-
 CellRow_t CellRow_Create(size_t rowSize)
 {
     CellRow_t newRow;
@@ -64,7 +61,7 @@ void CellRow_Print(CellRow_t *row)
     Cell_t *currentCell = row->pFirst;
     for (uint8_t i = 0; i < row->size; i++)
     {
-        putchar(currentCell->state ? STATE_1 : STATE_0);
+        putchar(currentCell->state ? CELL_STATE_1 : CELL_STATE_0);
         currentCell = currentCell->pNext;
     }
     putchar('\n');
