@@ -1,14 +1,14 @@
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -g -O0 -Wall -Wextra -Werror
 
 TARGET = a.out
 
-SOURCES = main.c Cell.c CellRow.c Rule.c
+SOURCES = main.c Cell.c CellRow.c Rule.c CA.c
 
 all:
 	$(CC) $(CFLAGS) $(SOURCES) -o $(TARGET)
-	./${TARGET}
+	./$(TARGET)
 
 clean:
 	rm -f $(TARGET)

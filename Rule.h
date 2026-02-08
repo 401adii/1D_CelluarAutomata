@@ -18,6 +18,7 @@ typedef enum
     RULE_ERROR
 } RuleStatus_t;
 
+void Rule_Print(Rule_t rule);
 RuleStatus_t Rule_Check(Rule_t *rule, Cell_t *cell);
 
 #endif

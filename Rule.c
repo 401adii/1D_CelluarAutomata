@@ -1,5 +1,11 @@
 #include "Rule.h"
+#include <stdio.h>
 #include <stdlib.h>
+
+void Rule_Print(Rule_t rule)
+{
+    printf("%d%d%d\n", rule.prevState, rule.state, rule.nextState);
+}
 
 RuleStatus_t Rule_Check(Rule_t *rule, Cell_t *cell)
 {
