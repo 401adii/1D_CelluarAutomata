@@ -1,13 +1,15 @@
 CC = gcc
 
-CFLAGS = -g -O0 -Wall -Wextra -Werror
+CFLAGS = -g -O0 -Wall -Wextra -Werror -lncurses
+
+LDLIBS = -lncurses
 
 TARGET = a.out
 
-SOURCES = main.c Cell.c CellRow.c Rule.c CA.c
+SOURCES = main.c Cell.c CellRow.c Rule.c CA.c UI.c
 
 all:
-	$(CC) $(CFLAGS) $(SOURCES) -o $(TARGET)
+	$(CC) $(CFLAGS) $(SOURCES) -o $(TARGET) $(LDLIBS)
 	./$(TARGET)
 
 clean:

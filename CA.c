@@ -46,6 +46,18 @@ void CA_Run(CellRow_t *row1, CellRow_t *row2, Rule_t *rules)
     }
 }
 
+void CA_Loop(CellRow_t *row1, CellRow_t *row2, Rule_t *rules)
+{
+    Cell_ToggleState(CellRow_GetCellAtIndex(row1, 3));
+    while (1)
+    {
+        CA_Run(row1, row2, rules);
+        CellRow_Print(row2);
+        row1 = row2;
+        row2 = row1;
+    }
+}
+
 void CA_DeleteRuleset(Rule_t *rules)
 {
     free(rules);
