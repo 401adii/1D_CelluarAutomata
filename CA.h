@@ -4,6 +4,8 @@
 #include "CellRow.h"
 #include "Rule.h"
 
+#define RULESET_SIZE 8
+
 Rule_t *CA_CreateRuleset(void);
 void CA_UpdateRulesetOutcome(Rule_t *rules, uint8_t ruleNum);
 void CA_Run(CellRow_t *row1, CellRow_t *row2, Rule_t *rules);

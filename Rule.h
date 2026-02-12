@@ -4,6 +4,8 @@
 #include "Cell.h"
 #include <stdint.h>
 
+#define MAX_CHARS 4
+
 typedef struct
 {
     uint8_t state;

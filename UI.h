@@ -3,5 +3,6 @@
 
 void UI_Init();
 void UI_Loop();
+void UI_Deinit();
 
 #endif

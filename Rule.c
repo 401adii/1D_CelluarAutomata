@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_CHARS 4
-
 void Rule_Print(Rule_t rule)
 {
     char chars[MAX_CHARS];

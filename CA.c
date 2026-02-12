@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define RULESET_SIZE 8
-
 Rule_t *CA_CreateRuleset()
 {
     Rule_t *rules = malloc(RULESET_SIZE * sizeof(Rule_t));
