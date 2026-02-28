@@ -1,9 +1,11 @@
 #include "UI.h"
 #include "CA.h"
 #include "Rule.h"
+#include <ctype.h>
 #include <ncurses.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 WINDOW *rulesWindow;
@@ -13,14 +15,18 @@ uint16_t rows, cols;
 uint16_t currentRule = 10;
 Rule_t *rules = NULL;
 
+char inputBuffer[4] = "000";
+uint8_t inputEnabled = 0;
+
 #define BUFFER_SIZE 50
+#define INPUT_BUFFER_SIZE 4
 #define MAX_ROWS rows
 #define MAX_COLS cols
 #define RULES_ROWS (rows / 2)
 #define RULES_COLS (cols * 3 / 4)
 #define RULES_ROWS_START (rows / 8)
 #define RULES_COLS_START (cols / 8)
-#define INPUT_ROWS 2
+#define INPUT_ROWS 3
 #define INPUT_COLS (cols * 3 / 4)
 #define INPUT_ROWS_START (rows * 3 / 5)
 #define INPUT_COLS_START (cols / 8)
@@ -30,6 +36,10 @@ Rule_t *rules = NULL;
 #define RULESLOT_COL_MARGIN (RULESLOT_WIDTH + 5)
 #define RULESLOT_ROW_START (RULES_ROWS / 4)
 #define RULESLOT_COL_START (RULES_COLS / 2 - RULESLOT_ROW_MARGIN * 2)
+#define INPUT_LEFT 'h'
+#define INPUT_RIGHT 'l'
+#define INPUT_CONFIRM '\n'
+#define INPUT_CANCEL 'c'
 
 typedef struct
 {
@@ -44,6 +54,8 @@ static void printRuleText();
 static void createAndPrintRuleSlot(uint16_t row, uint16_t col, RuleSlot_t *ruleSlot);
 static void printRule(RuleSlot_t *ruleSlot, Rule_t *rule);
 static uint16_t getTextCenterCol(WINDOW *window, char *buffer);
+static void handleInput(int ch);
+static void runCA();
 
 void UI_Init()
 {
@@ -53,6 +65,7 @@ void UI_Init()
 
     refresh();
     getmaxyx(stdscr, rows, cols);
+    curs_set(0);
 
     rulesWindow = newwin(RULES_ROWS, RULES_COLS, RULES_ROWS_START, RULES_COLS_START);
     box(rulesWindow, 0, 0);
@@ -72,14 +85,23 @@ void UI_Init()
 
     inputWindow = newwin(INPUT_ROWS, INPUT_COLS, INPUT_ROWS_START, INPUT_COLS_START);
     box(inputWindow, 0, 0);
+    wmove(inputWindow, 1, 1);
+    wprintw(inputWindow, "<--%c", INPUT_LEFT);
+    wmove(inputWindow, 1, INPUT_COLS - 5);
+    wprintw(inputWindow, "%c-->", INPUT_RIGHT);
     wrefresh(inputWindow);
-
-    getch();
 }
 
 void UI_Loop()
 {
-    refreshRuleset();
+    int ch;
+    while (1)
+    {
+        if ((ch = getch()) != ERR)
+        {
+            handleInput(ch);
+        }
+    }
 }
 
 void UI_Deinit()
@@ -130,10 +152,6 @@ static void createAndPrintRuleSlot(uint16_t row, uint16_t col, RuleSlot_t *ruleS
     mvwaddch(rulesWindow, row + 2, col + 5, ACS_HLINE);
     mvwaddch(rulesWindow, row + 2, col + 6, ACS_LRCORNER);
     mvwaddch(rulesWindow, row + 1, col + 6, ACS_VLINE);
-    // mvwaddch(rulesWindow, row + 1, col + 2, ACS_BLOCK);
-    //  mvwaddch(rulesWindow, row + 1, col + 3, ACS_BLOCK);
-    //  mvwaddch(rulesWindow, row + 1, col + 4, ACS_BLOCK);
-    //  mvwaddch(rulesWindow, row + 3, col + 3, ACS_BLOCK);
 }
 
 static void printRule(RuleSlot_t *ruleSlot, Rule_t *rule)
@@ -155,4 +173,68 @@ static uint16_t getTextCenterCol(WINDOW *window, char *buffer)
     uint16_t len = strlen(buffer);
 
     return (uint16_t)((c / 2) - (len / 2));
+}
+
+static void handleInput(int ch)
+{
+    if (isdigit(ch))
+    {
+        inputEnabled = 1;
+        for (int i = 0; i < INPUT_BUFFER_SIZE - 2; i++)
+        {
+            inputBuffer[i] = inputBuffer[i + 1];
+        }
+        inputBuffer[INPUT_BUFFER_SIZE - 2] = ch;
+        inputBuffer[INPUT_BUFFER_SIZE - 1] = '\0';
+        wmove(inputWindow, 1, INPUT_COLS / 2 - 1);
+        wattron(inputWindow, A_REVERSE);
+        wprintw(inputWindow, "%s", inputBuffer);
+        wattroff(inputWindow, A_REVERSE);
+    }
+    switch (ch)
+    {
+    case INPUT_LEFT:
+        if (currentRule == 0)
+            break;
+        currentRule--;
+        break;
+    case INPUT_RIGHT:
+        if (currentRule == 255)
+            break;
+        currentRule++;
+        break;
+    case INPUT_CONFIRM:
+        if (inputEnabled)
+        {
+            currentRule = atoi(inputBuffer);
+            if (currentRule > 255)
+            {
+                currentRule = 255;
+            }
+            inputEnabled = 0;
+        }
+        else
+        {
+            runCA();
+        }
+        break;
+    case INPUT_CANCEL:
+        inputEnabled = 0;
+        wmove(inputWindow, 1, INPUT_COLS / 2 - 1);
+        wprintw(inputWindow, "   ");
+        for (int i = 0; i < INPUT_BUFFER_SIZE - 1; i++)
+        {
+            inputBuffer[i] = '0';
+        }
+        break;
+    default:
+        break;
+    }
+    refreshRuleset();
+    wrefresh(rulesWindow);
+    wrefresh(inputWindow);
+}
+
+static void runCA()
+{
 }
