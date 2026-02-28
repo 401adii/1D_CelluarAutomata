@@ -26,7 +26,7 @@ uint8_t inputEnabled = 0;
 #define RULES_COLS (cols * 3 / 4)
 #define RULES_ROWS_START (rows / 8)
 #define RULES_COLS_START (cols / 8)
-#define INPUT_ROWS 3
+#define INPUT_ROWS 8
 #define INPUT_COLS (cols * 3 / 4)
 #define INPUT_ROWS_START (rows * 3 / 5)
 #define INPUT_COLS_START (cols / 8)
@@ -90,6 +90,16 @@ void UI_Init()
     wprintw(inputWindow, "<--%c", INPUT_LEFT);
     wmove(inputWindow, 1, INPUT_COLS - 5);
     wprintw(inputWindow, "%c-->", INPUT_RIGHT);
+    wmove(inputWindow, 2, 1);
+    wprintw(inputWindow, "Controls:");
+    wmove(inputWindow, 3, 1);
+    wprintw(inputWindow, "%c - Simulation speed down", INPUT_LEFT);
+    wmove(inputWindow, 4, 1);
+    wprintw(inputWindow, "%c - Simulation speed up", INPUT_RIGHT);
+    wmove(inputWindow, 5, 1);
+    wprintw(inputWindow, "%c - Cancel rule input", INPUT_CANCEL);
+    wmove(inputWindow, 6, 1);
+    wprintw(inputWindow, "%c - Quit program/simulation", INPUT_QUIT);
     wrefresh(inputWindow);
 }
 
@@ -100,6 +110,10 @@ void UI_Loop()
     {
         if ((ch = getch()) != ERR)
         {
+            if (ch == INPUT_QUIT)
+            {
+                break;
+            }
             handleInput(ch);
         }
     }
@@ -213,6 +227,12 @@ static void handleInput(int ch)
                 currentRule = 255;
             }
             inputEnabled = 0;
+            wmove(inputWindow, 1, INPUT_COLS / 2 - 1);
+            wprintw(inputWindow, "   ");
+            for (int i = 0; i < INPUT_BUFFER_SIZE - 1; i++)
+            {
+                inputBuffer[i] = '0';
+            }
         }
         else
         {
@@ -268,7 +288,7 @@ static void runCA()
             case INPUT_QUIT:
                 quit = 1;
                 break;
-            case INPUT_LEFT:
+            case INPUT_RIGHT:
                 delay -= 50;
                 if (delay < 100)
                 {
@@ -276,13 +296,15 @@ static void runCA()
                 }
                 timeout(delay);
                 break;
-            case INPUT_RIGHT:
+            case INPUT_LEFT:
                 delay += 50;
                 if (delay > 1000)
                 {
                     delay = 1000;
                 }
                 timeout(delay);
+                break;
+            default:
                 break;
             }
         }
