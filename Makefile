@@ -10,7 +10,6 @@ SOURCES = main.c Cell.c CellRow.c Rule.c CA.c UI.c
 
 all:
 	$(CC) $(CFLAGS) $(SOURCES) -o $(TARGET) $(LDLIBS)
-	./$(TARGET)
 
 clean:
 	rm -f $(TARGET)

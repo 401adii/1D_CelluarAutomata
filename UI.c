@@ -10,7 +10,7 @@ WINDOW *rulesWindow;
 WINDOW *inputWindow;
 WINDOW *CAWindow;
 uint16_t rows, cols;
-uint16_t currentRule = 130;
+uint16_t currentRule = 10;
 Rule_t *rules = NULL;
 
 #define BUFFER_SIZE 50
@@ -56,7 +56,6 @@ void UI_Init()
 
     rulesWindow = newwin(RULES_ROWS, RULES_COLS, RULES_ROWS_START, RULES_COLS_START);
     box(rulesWindow, 0, 0);
-    refreshRuleset();
     for (int i = 0; i < RULESET_SIZE; i++)
     {
         if (i < RULESET_SIZE / 2)
@@ -68,6 +67,7 @@ void UI_Init()
             createAndPrintRuleSlot(RULESLOT_ROW_START + RULESLOT_ROW_MARGIN, RULESLOT_COL_START + (RULESLOT_COL_MARGIN * (i - (RULESET_SIZE / 2))), &ruleSlots[i]);
         }
     }
+    refreshRuleset();
     wrefresh(rulesWindow);
 
     inputWindow = newwin(INPUT_ROWS, INPUT_COLS, INPUT_ROWS_START, INPUT_COLS_START);
@@ -130,7 +130,6 @@ static void createAndPrintRuleSlot(uint16_t row, uint16_t col, RuleSlot_t *ruleS
     mvwaddch(rulesWindow, row + 2, col + 5, ACS_HLINE);
     mvwaddch(rulesWindow, row + 2, col + 6, ACS_LRCORNER);
     mvwaddch(rulesWindow, row + 1, col + 6, ACS_VLINE);
-
     // mvwaddch(rulesWindow, row + 1, col + 2, ACS_BLOCK);
     //  mvwaddch(rulesWindow, row + 1, col + 3, ACS_BLOCK);
     //  mvwaddch(rulesWindow, row + 1, col + 4, ACS_BLOCK);
@@ -144,9 +143,9 @@ static void printRule(RuleSlot_t *ruleSlot, Rule_t *rule)
     temp[1] = rule->state ? CELL_STATE_1 : CELL_STATE_0;
     temp[2] = rule->nextState ? CELL_STATE_1 : CELL_STATE_0;
     temp[3] = rule->outcome ? CELL_STATE_1 : CELL_STATE_0;
-    mvwaddch(rulesWindow, ruleSlot->startRow + 1, ruleSlot->startCol + 2, temp[0]);
+    mvwaddch(rulesWindow, ruleSlot->startRow + 1, ruleSlot->startCol + 4, temp[0]);
     mvwaddch(rulesWindow, ruleSlot->startRow + 1, ruleSlot->startCol + 3, temp[1]);
-    mvwaddch(rulesWindow, ruleSlot->startRow + 1, ruleSlot->startCol + 4, temp[2]);
+    mvwaddch(rulesWindow, ruleSlot->startRow + 1, ruleSlot->startCol + 2, temp[2]);
     mvwaddch(rulesWindow, ruleSlot->startRow + 3, ruleSlot->startCol + 3, temp[3]);
 }
 
