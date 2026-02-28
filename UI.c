@@ -12,7 +12,7 @@ WINDOW *rulesWindow;
 WINDOW *inputWindow;
 WINDOW *CAWindow;
 uint16_t rows, cols;
-uint16_t currentRule = 10;
+uint16_t currentRule = 90;
 Rule_t *rules = NULL;
 
 char inputBuffer[4] = "000";
@@ -40,6 +40,7 @@ uint8_t inputEnabled = 0;
 #define INPUT_RIGHT 'l'
 #define INPUT_CONFIRM '\n'
 #define INPUT_CANCEL 'c'
+#define INPUT_QUIT 'q'
 
 typedef struct
 {
@@ -216,6 +217,7 @@ static void handleInput(int ch)
         else
         {
             runCA();
+            UI_Init();
         }
         break;
     case INPUT_CANCEL:
@@ -237,4 +239,66 @@ static void handleInput(int ch)
 
 static void runCA()
 {
+    wclear(inputWindow);
+    wclear(rulesWindow);
+    wrefresh(inputWindow);
+    wrefresh(rulesWindow);
+    delwin(inputWindow);
+    delwin(rulesWindow);
+    scrollok(stdscr, TRUE);
+    timeout(250);
+    CellRow_t crow1 = CellRow_Create(MAX_COLS);
+    CellRow_t crow2 = CellRow_Create(MAX_COLS);
+    char buffer[MAX_COLS + 1];
+    CellRow_t *firstRow = &crow1;
+    CellRow_t *secondRow = &crow2;
+    Cell_ToggleState(CellRow_GetCellAtIndex(&crow1, MAX_COLS / 2));
+    CellRow_GetString(firstRow, buffer);
+    printw("%s", buffer);
+    int quit = 0;
+    int delay = 250;
+    timeout(delay);
+    int ch;
+    while (1)
+    {
+        if ((ch = getch()) != ERR)
+        {
+            switch (ch)
+            {
+            case INPUT_QUIT:
+                quit = 1;
+                break;
+            case INPUT_LEFT:
+                delay -= 50;
+                if (delay < 100)
+                {
+                    delay = 100;
+                }
+                timeout(delay);
+                break;
+            case INPUT_RIGHT:
+                delay += 50;
+                if (delay > 1000)
+                {
+                    delay = 1000;
+                }
+                timeout(delay);
+                break;
+            }
+        }
+        if (quit)
+        {
+            wclear(stdscr);
+            refresh();
+            timeout(0);
+            break;
+        }
+        CA_Run(firstRow, secondRow, rules);
+        CellRow_GetString(secondRow, buffer);
+        printw("%s", buffer);
+        CellRow_t *temp = firstRow;
+        firstRow = secondRow;
+        secondRow = temp;
+        refresh();
+    }
 }

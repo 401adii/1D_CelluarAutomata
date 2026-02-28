@@ -64,7 +64,17 @@ void CellRow_Print(CellRow_t *row)
         putchar(currentCell->state ? CELL_STATE_1 : CELL_STATE_0);
         currentCell = currentCell->pNext;
     }
-    putchar('\n');
+}
+
+void CellRow_GetString(CellRow_t *row, char *buffer)
+{
+    Cell_t *currentCell = row->pFirst;
+    for (uint8_t i = 0; i < row->size; i++)
+    {
+        buffer[i] = currentCell->state ? CELL_STATE_1 : CELL_STATE_0;
+        currentCell = currentCell->pNext;
+    }
+    buffer[row->size] = '\0';
 }
 
 Cell_t *CellRow_GetCellAtIndex(CellRow_t *row, uint8_t index)
