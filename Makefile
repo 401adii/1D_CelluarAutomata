@@ -4,7 +4,7 @@ CFLAGS = -g -O0 -Wall -Wextra -Werror -lncurses
 
 LDLIBS = -lncurses
 
-TARGET = CA.out
+TARGET = automata
 
 SOURCES = main.c Cell.c CellRow.c Rule.c CA.c UI.c
 
